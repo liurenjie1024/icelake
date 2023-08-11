@@ -125,7 +125,7 @@ impl DataFileWriter {
                 .set_data_page_row_count_limit(20 * 1000)
                 .set_dictionary_page_size_limit(2 * 1024 * 1024)
                 .set_compression(Compression::GZIP(GzipLevel::default()))
-                .set_dictionary_enabled(true)
+                .set_dictionary_enabled(false)
                 .build();
             ParquetWriterBuilder::new(file_writer, self.arrow_schema.clone())
                 .with_properties(props)
