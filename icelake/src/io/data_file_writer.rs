@@ -9,6 +9,7 @@ use crate::{
 use arrow::datatypes::SchemaRef;
 use arrow::record_batch::RecordBatch;
 use opendal::Operator;
+use parquet::basic::{Compression, GzipLevel};
 use parquet::file::properties::{WriterProperties, WriterVersion};
 use parquet::format::FileMetaData;
 
@@ -120,6 +121,11 @@ impl DataFileWriter {
         let current_writer = {
             let props = WriterProperties::builder()
                 .set_writer_version(WriterVersion::PARQUET_2_0)
+                .set_data_page_size_limit(1024 * 1024)
+                .set_data_page_row_count_limit(20 * 1000)
+                .set_dictionary_page_size_limit(2 * 1024 * 1024)
+                .set_compression(Compression::GZIP(GzipLevel::default()))
+                .set_dictionary_enabled(true)
                 .build();
             ParquetWriterBuilder::new(file_writer, self.arrow_schema.clone())
                 .with_properties(props)
